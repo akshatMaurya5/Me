@@ -1,0 +1,163 @@
+HM Round:
+
+TODO:
+Terraform scripts to manage AWS services like EC2
+event loop in node
+graphql - not sure what's the status.
+
+### Storefox AI
+
+* Push notification service:
+
+Firebase provides two types of msgs: 
+   - Notification msg we all know
+   - Another one is data messages: used for sending custom data which is handled in background, eg an update.
+
+- device sends a device token which is stored in db
+- exponential backoff in case of failure
+- implemented queue notifications to handle large volume of notifications. this decoupled the notification triggering and sending process.
+- unique identifiers for notification msg to ensure idempotency.
+- challenge: fcm is rate limited; solved using batch request which uses multicast messaging feature. can handle 500 devices per request
+  - multicast feature allows to send notification to multiple devices in a single request.
+- challenge: used redis caching to access frequently accessed device tokens
+
+* fcm handles notifications for offline users by storing in its queue and delivering them when device comes online. msg is queued for 28 days.
+* 
+
+
+Kafka- distributed event streaming platform
+
+
+### Blockchain R&D intern
+
+Q: how you optimized query performance using subgraphs on The Graph Protocol?
+A: created subgraphs to structure and index swap txn data from uniswap which made data retrieval faster.
+
+Q: How does BigQuery handle large-scale data processing, and what optimizations did you apply to your queries?
+A: BigQuery is a serverless, columnar database that uses distributed processing to handle large-scale data. I optimized queries by using partitioning and clustering to reduce the amount of data scanned. I also avoided **SELECT *** and used LIMIT and WHERE clauses to filter data early in the query.
+
+
+### 2M intern
+
+- Backpressure occurs when the data source produces data faster than the consumer can process it. Use the .pause() and .resume() methods to control the flow of data. Alternatively, use the pipe() method, which automatically handles backpressure by pausing the readable stream when the writable stream is busy.
+
+
+
+
+### SKILLS:
+
+Q: How does Docker handle container networking, and how would you set up communication between multiple containers?
+A: docker uses bridge networks to allow containers to communicate. 
+
+Q: Explain how Kafka ensures fault tolerance and high availability in a distributed system?
+A: Kafka uses fault tolerance by replicating partitions across multiple brokers. If one broker fails, other one takes over. Kafka also uses Zookeeper for leader election and cluster coordination.
+
+
+### Kafka:
+
+- Kafka is distributed event streaming platform used for high level throughput, fault-tolerant messaging.
+* Kafka acts as a queue when multiple consumers belong to same consumer group
+
+* RabbitMQ used for point to point messaging with lower throughput designed for reliable message delivery. 
+* Kafka retains msg for longer period and allows multiple consumers to read the same msg.
+
+#Components:
+- Producer - publishes msg to kafka topics
+- Topic: a channel where msgs are published
+- Consumer: subscribe to topics and process the msg
+- Broker: a server that stores data and serves client
+- Partition: a topic is divided in to multiple partitions to enable parallel processing for scaling.
+- Zookeeper: manages metadata and does the leader election process. manages and coordinates the kafka brokers. 
+
+- Ensuring fault tolerance and high availability : through replication. Each partition can be replicated across multiple brokers.
+
+# Advantages of kafka over RabbitMQ:
+- kafka has high throughput as it scales horizontally using partitions while the RabbitMQ scales vertically but struggles at high throughput
+- kafka msgs are persisted on disk and retains them for a certain period of time while RabbitMQ deletes msgs once consumed.
+- kafka maintains ordering whin a partition while RabbitMQ does not guarantee that. 
+* prefer RabbitMQ if your are using req-res architecture while kafka is preferred in when we needevent streaming, real-time data pipelines.
+
+
+### Redis: (Remote dictionary server)
+
+- stores data in key value pair
+
+## Persistence Mechanisms: 
+
+- RDb(redis database file) : takes periodic snapshots of the dataset at specified intervals which is stored in binary file. Con is loss of data of current                  snapshot if redis crashes while taking snapshot.
+
+- AOF(append-only file) : appends all logs to file con: performance affected.
+
+- Hybrid: (rdb+aof) : The RDB snapshot mechanism can be used for periodic backups, and the AOF log ensures that no write operations are lost, even if the server crashes between snapshots.
+
+* Storage: Redis - in-memory Kafka: persistent (disk based)
+
+
+### Nextjs:
+
+- SSR: Data is fetched on the server before sending the page. Page is generated on the server for each request and set as full rendered html to the browser. a function fetches data from the api and that data is sent as prop to the page. so server renders the props data in page and sends full html
+
+- CSR: Data is fetched on the client/browser, after loading the page. i.e. useEffect is used here so page loads first, then api gets called.
+
+
+
+### Navic project:
+
+- Bhuvan maps is ISRO backed platform which has high resolution Indian geospatial data. 
+Q: how to scale websockets? 
+A: 1. connection pooling and load balancing. 
+   2. web sockets run in multi-threaded environment with an event driven model
+  
+- in connection pooling instead of creating new ws connection for every req, we reuse the existing connections to reduce overhead. So when a new device connected, instead of assigning a separate thread, it is added to pool of reusable connections. 
+
+- node is single threaded but ws use an event loop that handles multiple connections without blocking the main thread. When a ws event occurs, the vent loop assigns it to a worker thread. 
+
+- Improvement that could be made: redis pub sub could also be used to scale 
+
+
+# deployment of server on Linux based system using pm2:
+
+- pm2 is process manager for nodejs applications. it helps for load balancing, log management and auto-restart also. 
+
+### Blockchain R&D intern:
+- used google bq to extract data and optimized queries using partitioning and clustering.
+- partition divides table in smaller, manageable chunks based on a specific column.(used initial wallet address here)
+- clustering sorts data within a partition on one or more column. 
+- designed subgraphs by indexing the necessary data only. 
+- processing 1M transactions: batch processing, parallel computing
+
+
+
+### GraphQL: 
+
+- query language for APIs that allows clients to request only that data they need. 
+
+# Concepts:
+- Schema: defines the structure of api
+- queries: fetch data from server
+- mutations: modify data on server
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

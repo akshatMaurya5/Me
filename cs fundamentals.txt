@@ -1,0 +1,93 @@
+### Operating Systems:
+
+- kernel: managers hw and system calls.
+
+- system calls: interface bw user and os kernel. when program need to perform low level operation that requires access to hw or any resource, it makes system call. eg-> fork, exit, wait, exec, open, close read, write, malloc.
+
+- a process is an instance of a program in execution. it has it's own memory space, resources and state.
+- thread is lightweight unit of execution within a process. 
+
+# process vs thread:
+- memory : has separate memory space || shares memory with parent process
+- communication: used inter process comm || direct memory access
+- context switching: expensive || lightweight 
+
+- Deadlock: occurs when multiple processes hold resources and wait for each other to release them. Prevent by: mutual exclusion, hold and wait, no preemption, circular wait.
+
+- virtual memory: it allows a process to use more memory than physically available by swapping pages bw ram and disk.
+- paging: divides memory into fixed sized pages and maps them physical frames. 
+- segmentation: divides memory into variable-sized logical segments. 
+
+- context switching: when cpu saves the state of current process and loads the state of another. Happens in mulit-tasking, interrupt handling. 
+
+- trashing: occurs when system spends more time in swapping pages in and out of memory than executing process. Caused due to insufficient RAM. Can be solved using: increasing amount of physical memory, use better page replacement algo like LRU. Leads to belady's anamoly.
+
+- RAID: (redundant array of independent disks): storage technology that combines multiple disks to improve  performance. 
+
+- starvation: when a process does not get access to resouces for a long time
+- ageing: prevents starvation by gradually increasing process priority.
+
+
+
+### DBMS:
+
+- ACID: atomicity, consistency, isolation, durability.
+
+- Indexing: it speeds up searches by creating a data structure that allows faster lookups. 
+- B-tree is used in indexing: it is self balancing tree used for indexing db.
+- minimizes disk i/o -> reduces tree depth
+- tradeoff: increases storage space, and shows down write operations. 
+
+- sharding: divides db into smaller parts(shards). data is split across multiple servers
+
+- replication: copies same data to multiple servers
+
+
+- partitioning: splits larger table into smaller pieces for faster queries. 
+
+
+
+### Computer Networks:
+
+# tcp vs udp
+- establish connection before communication || sends packets without prior connection
+- slower due to reliability mechanisms || no guarantee of delivery
+
+
+- subnet is logical division of IP network. It reduces congestion, enhances security by isolating network segments. 
+
+
+- NAT (network address translation) translates pvt IP addresses to public IP addresses for communication over the internet. 
+
+- Firewall is a network security device that monitors and controls incoming and outgoing traffic bases on pre-defined rules. 
+
+- DDoS (distributed denial of service) attack overwhelms server with traffic from multiple sources, making it unavailable. 
+
+- SSL/TLS (secure socket layer/transport layer security) is a cryptographic protocol used to secure communication over the internet. 
+  Working:
+  - client and server perform a handshake to establish a secure connection. 
+  - server send it's ssl certificate to the client 
+  - client verifies the certificate and generates session key. 
+  - all data is encrypted using session key. 
+
+
+
+- MAC address: a hw address assigned to a network interface. It is unique and permanent. Used for communication within the same network. 
+- IP address: a logical address assigned to a device in a network. Can change. Used for communication across networks. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
