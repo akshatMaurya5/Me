@@ -1,9 +1,9 @@
 HM Round:
 
 TODO:
-Terraform scripts to manage AWS services like EC2
-event loop in node
 graphql - not sure what's the status.
+
+
 
 ### Storefox AI
 
@@ -22,11 +22,66 @@ Firebase provides two types of msgs:
 - challenge: used redis caching to access frequently accessed device tokens
 
 * fcm handles notifications for offline users by storing in its queue and delivering them when device comes online. msg is queued for 28 days.
-* 
 
 
-Kafka- distributed event streaming platform
 
+## Terraform: it is IAC (infrastructure as code)
+
+- terraform maintains a state file to track infra changes. (.tfstate)
+
+# working of terraform internally ->
+- There are 3 main stages: write, plan, apply
+- providers: there are plugins to interact with cloud APIs like aws, gcp
+- modules: reusabe tf configurations
+- state files: tracks infra state
+- execution plan: tf plan shows proposed changes
+- tf graph shows dependency resolution 
+
+- Managing ec2 instances: terraform compares the current state (terraform.tfstate) with the desired state defined in the confi file. If change is detected tf plan shows that modifications done. Then running tf apply updates the ec2 instance. 
+
+- provider "aws" -> the provider interacts with the APIs of the cloud service.
+
+- security groups acts as virtual firewall for EC2 instance. they control inbound and outbound traffic by defining rules. (ingress/engress)
+
+- for dependencies of instance on security grp, first create sg and then pass on that in depend_on = [aws_security_group.example]
+
+- aws_autoscaling_group is used to scale ec2 instance. we define the max, min, and desired no. of instances. If traffic spikes, it will scale automatically.
+- It scales according to the policies defined based on cloudwatch alarms. (IT IS HORIZONTAL SCALING)
+
+- to prevent merge conflicts, enable state locking with dynamoDb
+
+- in dev env, use remote state backends like aws s3 with dynamodb for state locking.  
+- for high availability, deploy across multiple availability zones. 
+
+- create_before_destroy lifecycle rule to create new resource before creating old one. 
+
+- to provision multiple ec2 instances with different configurations, use terraform's count or for_each meta-argument. 
+
+- I once faced an issue where Terraform was unable to delete a resource due to a dependency conflict. After investigating, I realized the state file was out of sync with the actual infrastructure. I used ```terraform state rm``` to remove the resource from the state file and then re-imported it. I also implemented a remote backend with state locking to prevent such issues in the future.
+
+### AWS:
+
+- AWS Lambda: It is serverless computing service by AWS. Allows you to run code without provisioning and  managing servers. It is event driven. Scales horizontally 
+
+- VPC (Virtual Private Cloud): logically isolated network in aws
+  - Subnets: public and private. Subnets divide network into smaller netoworks.
+  - Internet gateway: to enable external traffic to public subnets.
+  - NAT gateway: allows outbound traffic from pvt subnets.
+  - Security groups: firewalls for instances. 
+  - Network ACLs: firewalls at subnet level. 
+  - Route tables: in vpc, there are route tables which control traffic bw subnets and internet. 
+
+- AWS Fargate: serverless compute engine for containers. 
+
+- EC2 instance is ia virtual server in aws cloud. 
+- S3: simple storage service. 
+
+Q: how would you design highly available web app on aws? 
+A: - use ec2 instances in auto scaling group across multiple AZs (availability zones)
+   - use elastic load balancer, store static data in s3, use cloudfront for cdn
+   - can use route 53 for dns resolution.
+
+- DynamoDB: 
 
 ### Blockchain R&D intern
 
@@ -56,6 +111,16 @@ A: Kafka uses fault tolerance by replicating partitions across multiple brokers.
 ### Kafka:
 
 - Kafka is distributed event streaming platform used for high level throughput, fault-tolerant messaging.
+
+Kafka- distributed event streaming platform Meaning: 
+
+- distributed: kafka is designed to run as a cluster of servers(brokers) that work together to store and process data. 
+- data is partitioned across multiple brokers, allowing to scale horizontally. 
+- event streaming: event is an individual piece of data like click, transaction. And stream refers to continuous flow of these data in real time. 
+- Kafka is designed to handle real-time data streams, where events are produced, processed, and consumed as they occur.
+
+
+
 * Kafka acts as a queue when multiple consumers belong to same consumer group
 
 * RabbitMQ used for point to point messaging with lower throughput designed for reliable message delivery. 
@@ -133,18 +198,25 @@ A: 1. connection pooling and load balancing.
 - query language for APIs that allows clients to request only that data they need. 
 
 # Concepts:
-- Schema: defines the structure of api
+- Schema: defines the types of the data and their realtionship
 - queries: fetch data from server
 - mutations: modify data on server
+- resolvers: define how graphql fetches/modifies data. 
+- 
 
 
+### Event loop in Node.Js
+- allows to perform non blocking i/o operations despite being single-threaded. 
 
+# Working: 
+- node uses it's event driven architecture to handle multiple tasks simultaneously. 
+- event loop manages async operations and callbacks. 
+- event loop is divided into several phases like timers, callbacks, idle, prepare, poll, check.
 
-
-
-
-
-
+- client makes function call
+- fn gets pushed onto call stack. 
+- if fn is async, it is sent to nodejs APIs (callbacks used here)
+- in case of blocking operation: we go to thread pool, assign a worker and processing is done. 
 
 
 
