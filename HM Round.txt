@@ -2,8 +2,12 @@ HM Round:
 
 TODO:
 graphql - not sure what's the status.
+websockets
+celery
+partition vs sharding
+nlb
 
-
+builder - avoid complex constructors with too many parameters
 
 ### Storefox AI
 
@@ -23,7 +27,10 @@ Firebase provides two types of msgs:
 
 * fcm handles notifications for offline users by storing in its queue and delivering them when device comes online. msg is queued for 28 days.
 
-
+# celery:
+- it is distributed task queue system for python 
+- allows to offload tasks to bg workers
+- celery handles task distribution 
 
 ## Terraform: it is IAC (infrastructure as code)
 
@@ -32,12 +39,12 @@ Firebase provides two types of msgs:
 # working of terraform internally ->
 - There are 3 main stages: write, plan, apply
 - providers: there are plugins to interact with cloud APIs like aws, gcp
-- modules: reusabe tf configurations
+- modules: reusable tf configurations
 - state files: tracks infra state
 - execution plan: tf plan shows proposed changes
 - tf graph shows dependency resolution 
 
-- Managing ec2 instances: terraform compares the current state (terraform.tfstate) with the desired state defined in the confi file. If change is detected tf plan shows that modifications done. Then running tf apply updates the ec2 instance. 
+- Managing ec2 instances: terraform compares the current state (terraform.tfstate) with the desired state defined in the configuration file. If change is detected tf plan shows that modifications done. Then running tf apply updates the ec2 instance. 
 
 - provider "aws" -> the provider interacts with the APIs of the cloud service.
 
@@ -61,19 +68,19 @@ Firebase provides two types of msgs:
 
 ### AWS:
 
-- AWS Lambda: It is serverless computing service by AWS. Allows you to run code without provisioning and  managing servers. It is event driven. Scales horizontally 
+- AWS Lambda: It is serverless computing service by AWS. Allows you to run code without provisioning and managing servers. It is event driven. Scales horizontally 
 
 - VPC (Virtual Private Cloud): logically isolated network in aws
-  - Subnets: public and private. Subnets divide network into smaller netoworks.
+  - Subnets: public and private. Subnets divide network into smaller networks.
   - Internet gateway: to enable external traffic to public subnets.
-  - NAT gateway: allows outbound traffic from pvt subnets.
-  - Security groups: firewalls for instances. 
+  - NAT gateway: allows outbound traffic from private subnets.
+  - Security groups: firewalls for instances.
   - Network ACLs: firewalls at subnet level. 
   - Route tables: in vpc, there are route tables which control traffic bw subnets and internet. 
 
 - AWS Fargate: serverless compute engine for containers. 
 
-- EC2 instance is ia virtual server in aws cloud. 
+- EC2 instance is a virtual server in aws cloud. 
 - S3: simple storage service. 
 
 Q: how would you design highly available web app on aws? 
@@ -81,7 +88,9 @@ A: - use ec2 instances in auto scaling group across multiple AZs (availability z
    - use elastic load balancer, store static data in s3, use cloudfront for cdn
    - can use route 53 for dns resolution.
 
-- DynamoDB: 
+- DynamoDB: NoSQL db 
+- serverless db
+- serverless means management of servers is entirely handles by cloud providers
 
 ### Blockchain R&D intern
 
@@ -91,12 +100,36 @@ A: created subgraphs to structure and index swap txn data from uniswap which mad
 Q: How does BigQuery handle large-scale data processing, and what optimizations did you apply to your queries?
 A: BigQuery is a serverless, columnar database that uses distributed processing to handle large-scale data. I optimized queries by using partitioning and clustering to reduce the amount of data scanned. I also avoided **SELECT *** and used LIMIT and WHERE clauses to filter data early in the query.
 
+- used google bq to extract data and optimized queries using partitioning and clustering.
+- partition divides table in smaller, manageable chunks based on a specific column.(used initial wallet address here)
+- clustering sorts data within a partition on one or more column. 
+- designed subgraphs by indexing the necessary data only. 
+- processing 1M transactions: batch processing, parallel computing
+
+# partitioning vs clustering
+- partioning means dividing large db table into smaller ones
+- division is based on specific criteria like range of dates, list of values 
+- partitioned by dataset on block_timestamp
+
+
+# Sharding
+- in sharding large db is split into smaller independent dbs called shards. 
+
+
+##Clustring
+- clustering refers to organizing physical storage of data based on value one or more value of colums
+- it aims to store the rows with similar values close together on disk 
+- it helps to filter data efficiently,.  
+- basically it orders the data 
+- clustered by data on from_address/transaction_hash
+
+** NOTE: google has already implemented portioning
+** so i DID clustering of that data then 
+
 
 ### 2M intern
 
 - Backpressure occurs when the data source produces data faster than the consumer can process it. Use the .pause() and .resume() methods to control the flow of data. Alternatively, use the pipe() method, which automatically handles backpressure by pausing the readable stream when the writable stream is busy.
-
-
 
 
 ### SKILLS:
@@ -120,10 +153,23 @@ Kafka- distributed event streaming platform Meaning:
 - Kafka is designed to handle real-time data streams, where events are produced, processed, and consumed as they occur.
 
 
-
 * Kafka acts as a queue when multiple consumers belong to same consumer group
 
-* RabbitMQ used for point to point messaging with lower throughput designed for reliable message delivery. 
+* RabbitMQ used for point to point messaging with lower throughput designed for reliable message delivery. This is because RabbitMQ uses acks. if any ack fails, we re-queue to deliver msg again
+
+** Use RabbitMQ when u need point to point msg delivery with low throughput. 
+
+Reason for low throughput: architecture: Message oriented middleware
+- treats each msg individually, creates overhead. 
+- writes msgs in disk for reliability which is slow
+- requires back and forth mechanism of acks 
+
+** kafka is faster bcoz:
+- log based architecture:
+- provides batching, minimizes i/o operations
+- can scale horizontally
+- dont require acks, uses offset tracking
+
 * Kafka retains msg for longer period and allows multiple consumers to read the same msg.
 
 #Components:
@@ -140,14 +186,15 @@ Kafka- distributed event streaming platform Meaning:
 - kafka has high throughput as it scales horizontally using partitions while the RabbitMQ scales vertically but struggles at high throughput
 - kafka msgs are persisted on disk and retains them for a certain period of time while RabbitMQ deletes msgs once consumed.
 - kafka maintains ordering whin a partition while RabbitMQ does not guarantee that. 
-* prefer RabbitMQ if your are using req-res architecture while kafka is preferred in when we needevent streaming, real-time data pipelines.
+- kafka can easily scale horizontally, while RabbitMQ scales vertically
+* prefer RabbitMQ if your are using req-res architecture while kafka is preferred in when we need event streaming, real-time data pipelines.
 
 
 ### Redis: (Remote dictionary server)
 
 - stores data in key value pair
 
-## Persistence Mechanisms: 
+## Persistence Mechanisms: this is optional, mainly done in-memory
 
 - RDb(redis database file) : takes periodic snapshots of the dataset at specified intervals which is stored in binary file. Con is loss of data of current                  snapshot if redis crashes while taking snapshot.
 
@@ -156,6 +203,10 @@ Kafka- distributed event streaming platform Meaning:
 - Hybrid: (rdb+aof) : The RDB snapshot mechanism can be used for periodic backups, and the AOF log ensures that no write operations are lost, even if the server crashes between snapshots.
 
 * Storage: Redis - in-memory Kafka: persistent (disk based)
+
+- redis cluster can be used to scale horizontally
+
+- Redis sentinel: provides high availability by monitoring redis nodes, alerting and automatically promotes replicate in case primary node fails.
 
 
 ### Nextjs:
@@ -175,22 +226,14 @@ A: 1. connection pooling and load balancing.
   
 - in connection pooling instead of creating new ws connection for every req, we reuse the existing connections to reduce overhead. So when a new device connected, instead of assigning a separate thread, it is added to pool of reusable connections. 
 
-- node is single threaded but ws use an event loop that handles multiple connections without blocking the main thread. When a ws event occurs, the vent loop assigns it to a worker thread. 
+- node is single threaded but ws use an event loop that handles multiple connections without blocking the main thread. When a ws event occurs, the event loop assigns it to a worker thread. 
 
 - Improvement that could be made: redis pub sub could also be used to scale 
 
 
-# deployment of server on Linux based system using pm2:
+# deployment of server on Linux based system using pm2: 
 
 - pm2 is process manager for nodejs applications. it helps for load balancing, log management and auto-restart also. 
-
-### Blockchain R&D intern:
-- used google bq to extract data and optimized queries using partitioning and clustering.
-- partition divides table in smaller, manageable chunks based on a specific column.(used initial wallet address here)
-- clustering sorts data within a partition on one or more column. 
-- designed subgraphs by indexing the necessary data only. 
-- processing 1M transactions: batch processing, parallel computing
-
 
 
 ### GraphQL: 
@@ -198,11 +241,16 @@ A: 1. connection pooling and load balancing.
 - query language for APIs that allows clients to request only that data they need. 
 
 # Concepts:
-- Schema: defines the types of the data and their realtionship
+- Schema: defines the types of the data and their relationship
 - queries: fetch data from server
 - mutations: modify data on server
 - resolvers: define how graphql fetches/modifies data. 
-- 
+
+# N+1 problem in graphql
+- for each user, we fetch post again -> multiple db calls
+- solved using DataLoader batches db calls
+- DataLoader is utility for batching and caching db requests in graphQL
+- dataloader collects all reqs made within a single tick of event loop and combines them in single batch.
 
 
 ### Event loop in Node.Js
@@ -220,13 +268,36 @@ A: 1. connection pooling and load balancing.
 
 
 
+### Websockets:
+
+- websocket is a full duplex communication protocol that enables bi-directional communication bw a client and a server over a single tcp connection unlike http which follows req-res model
+
+#working of ws
+- handshake: client sends an http upgrade request to server -> if server supports ws, it responds with 101 switching protocols status code -> connection gets upgraded from http to ws then
+- once connection is established, msgs are send via frames(text, binary, ping/pong, close)
+- unlike http, no need to establish new connection for every msg
+
+Q: how ws handle reconnection if connection drops?
+A: 1. heartbeat mechanism 
+   2. auto reconnect logic
+
+# How to scale ws? 
+- use pub/sub for msg distribution
+- deploy multiple ws server behind load balancer
+- use connection pooling
+
+- Ws frames: are the smallest unit of data transmitted over a ws connection. Frame consists of a header (contains metadata like opcode, payload length) and payload (actual data)
 
 
+# Alternatives of WS:
+- SSE :  allows server to push updates to clinet over http but it is unidirectional
+- long polling
 
-
-
-
-
+# ws performance optimizations:
+- compression: ws payload can be large, so use ```permessage-deflate``` ws extension to compress msgs. works best with text, json msgs
+- batching msgs
+- connection poolingh: creating and destroying connection frequently increases latency and resource usage. 
+- load balancing
 
 
 
