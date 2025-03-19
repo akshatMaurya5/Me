@@ -1,13 +1,13 @@
 HM Round:
 
 TODO:
-graphql - not sure what's the status.
-websockets
+graphql - not sure what's the status
 celery
-partition vs sharding
 nlb
+what happens when we type localhost
+more docker
 
-builder - avoid complex constructors with too many parameters
+builder pattern lld - avoid complex constructors with too many parameters
 
 ### Storefox AI
 
@@ -66,6 +66,13 @@ Firebase provides two types of msgs:
 
 - I once faced an issue where Terraform was unable to delete a resource due to a dependency conflict. After investigating, I realized the state file was out of sync with the actual infrastructure. I used ```terraform state rm``` to remove the resource from the state file and then re-imported it. I also implemented a remote backend with state locking to prevent such issues in the future.
 
+for ec2 instance
+- providers
+- security group for alb and ec2 instance
+- define ec2 instance and attach sg 
+- Auto scaling grps: adjusts no. of ec2 instances in response to demand
+- Auto load balancer distributes traffic across instances
+
 ### AWS:
 
 - AWS Lambda: It is serverless computing service by AWS. Allows you to run code without provisioning and managing servers. It is event driven. Scales horizontally 
@@ -116,8 +123,8 @@ A: BigQuery is a serverless, columnar database that uses distributed processing 
 - in sharding large db is split into smaller independent dbs called shards. 
 
 
-##Clustring
-- clustering refers to organizing physical storage of data based on value one or more value of colums
+##Clustering
+- clustering refers to organizing physical storage of data based on value one or more value of columns
 - it aims to store the rows with similar values close together on disk 
 - it helps to filter data efficiently,.  
 - basically it orders the data 
@@ -169,6 +176,7 @@ Reason for low throughput: architecture: Message oriented middleware
 - provides batching, minimizes i/o operations
 - can scale horizontally
 - dont require acks, uses offset tracking
+- offset is how many msg each consumer has received and when consumer needs data, kafka sends new data from that offset
 
 * Kafka retains msg for longer period and allows multiple consumers to read the same msg.
 
@@ -189,6 +197,13 @@ Reason for low throughput: architecture: Message oriented middleware
 - kafka can easily scale horizontally, while RabbitMQ scales vertically
 * prefer RabbitMQ if your are using req-res architecture while kafka is preferred in when we need event streaming, real-time data pipelines.
 
+
+## use case difference
+- in kafka, the msg from the topic can be used by various services at same time like logging, transcription i.e single msg can be used in multiple places while in RabbitMQ one msg can go at one place.
+This thing is known as FAN OUT.
+
+- prefer RabbitMQ when we want msg routing. RabbitMQ has  architecture (producer - exchange - queue(can be multiple) - consumer)
+this exchange help to route msg efficiently 
 
 ### Redis: (Remote dictionary server)
 
@@ -296,7 +311,7 @@ A: 1. heartbeat mechanism
 # ws performance optimizations:
 - compression: ws payload can be large, so use ```permessage-deflate``` ws extension to compress msgs. works best with text, json msgs
 - batching msgs
-- connection poolingh: creating and destroying connection frequently increases latency and resource usage. 
+- connection pooling: creating and destroying connection frequently increases latency and resource usage. 
 - load balancing
 
 
