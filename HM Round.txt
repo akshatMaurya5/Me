@@ -4,8 +4,10 @@ TODO:
 graphql - not sure what's the status
 celery
 nlb
-what happens when we type localhost
 more docker
+challenges faced
+what is indexing
+
 
 builder pattern lld - avoid complex constructors with too many parameters
 
@@ -122,6 +124,12 @@ A: BigQuery is a serverless, columnar database that uses distributed processing 
 # Sharding
 - in sharding large db is split into smaller independent dbs called shards. 
 
+# Indexing:
+- indexing means creating a data structure like b-tress, hash tables that improves the speed of retrieval operations on db.
+- indexes are created on one or more colums. these colums are often used in search condition like WHERE clause.
+- each entry in index contains a key (the value from the indexed column) and a pointer to the corresponding row in the table.
+
+
 
 ##Clustering
 - clustering refers to organizing physical storage of data based on value one or more value of columns
@@ -147,7 +155,6 @@ A: docker uses bridge networks to allow containers to communicate.
 Q: Explain how Kafka ensures fault tolerance and high availability in a distributed system?
 A: Kafka uses fault tolerance by replicating partitions across multiple brokers. If one broker fails, other one takes over. Kafka also uses Zookeeper for leader election and cluster coordination.
 
-
 ### Kafka:
 
 - Kafka is distributed event streaming platform used for high level throughput, fault-tolerant messaging.
@@ -160,11 +167,16 @@ Kafka- distributed event streaming platform Meaning:
 - Kafka is designed to handle real-time data streams, where events are produced, processed, and consumed as they occur.
 
 
+- partition lies in server/broker level
+1
+- consumers pull the msgs from brokers so that consumers can work at their own pace
+
 * Kafka acts as a queue when multiple consumers belong to same consumer group
 
 * RabbitMQ used for point to point messaging with lower throughput designed for reliable message delivery. This is because RabbitMQ uses acks. if any ack fails, we re-queue to deliver msg again
 
 ** Use RabbitMQ when u need point to point msg delivery with low throughput. 
+** Kafka has gurantee of atleast once delivery. Suppose for m1 is delivered, and offset is 1 rn. if m2 fails, offset does not get incremented, so we can pull m2 from the queue. On successful processing, consumer sends ack to increment the offset. 
 
 Reason for low throughput: architecture: Message oriented middleware
 - treats each msg individually, creates overhead. 
@@ -187,6 +199,13 @@ Reason for low throughput: architecture: Message oriented middleware
 - Broker: a server that stores data and serves client
 - Partition: a topic is divided in to multiple partitions to enable parallel processing for scaling.
 - Zookeeper: manages metadata and does the leader election process. manages and coordinates the kafka brokers. 
+
+- Zookeeper:
+- kafka keeps replica of each partition
+- kafka has primary replica which do write ops and other does read ops
+- every read replica pull msg from primary to stay in sync
+- if primary write replica fails, zookeeper promotes a read replica to become primary. 
+- how to maintain consistency? consumer will consume only those msgs which have been replicated across all replicas. 
 
 - Ensuring fault tolerance and high availability : through replication. Each partition can be replicated across multiple brokers.
 
