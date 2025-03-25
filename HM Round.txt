@@ -7,7 +7,7 @@ nlb
 more docker
 challenges faced
 what is indexing
-
+circuit breaker
 
 builder pattern lld - avoid complex constructors with too many parameters
 
@@ -68,9 +68,9 @@ Firebase provides two types of msgs:
 
 - I once faced an issue where Terraform was unable to delete a resource due to a dependency conflict. After investigating, I realized the state file was out of sync with the actual infrastructure. I used ```terraform state rm``` to remove the resource from the state file and then re-imported it. I also implemented a remote backend with state locking to prevent such issues in the future.
 
-for ec2 instance
-- providers
-- security group for alb and ec2 instance
+for ec2 instance flow is like: 
+- define providers
+- define security group for alb and ec2 instance
 - define ec2 instance and attach sg 
 - Auto scaling grps: adjusts no. of ec2 instances in response to demand
 - Auto load balancer distributes traffic across instances
@@ -119,14 +119,14 @@ A: BigQuery is a serverless, columnar database that uses distributed processing 
 - partioning means dividing large db table into smaller ones
 - division is based on specific criteria like range of dates, list of values 
 - partitioned by dataset on block_timestamp
-
+- clustered by transaction_hash
 
 # Sharding
 - in sharding large db is split into smaller independent dbs called shards. 
 
 # Indexing:
-- indexing means creating a data structure like b-tress, hash tables that improves the speed of retrieval operations on db.
-- indexes are created on one or more colums. these colums are often used in search condition like WHERE clause.
+- indexing means creating a data structure like b-trees, hash tables that improves the speed of retrieval operations on db.
+- indexes are created on one or more columns. these columns are often used in search condition like WHERE clause.
 - each entry in index contains a key (the value from the indexed column) and a pointer to the corresponding row in the table.
 
 
@@ -138,7 +138,7 @@ A: BigQuery is a serverless, columnar database that uses distributed processing 
 - basically it orders the data 
 - clustered by data on from_address/transaction_hash
 
-** NOTE: google has already implemented portioning
+** NOTE: google has already implemented partitioning
 ** so i DID clustering of that data then 
 
 
@@ -166,17 +166,19 @@ Kafka- distributed event streaming platform Meaning:
 - event streaming: event is an individual piece of data like click, transaction. And stream refers to continuous flow of these data in real time. 
 - Kafka is designed to handle real-time data streams, where events are produced, processed, and consumed as they occur.
 
+* Kafka gives fan-out feature
 
 - partition lies in server/broker level
-1
-- consumers pull the msgs from brokers so that consumers can work at their own pace
+
+- consumers pull the msgs from brokers so that consumers can work at their own pace (NOTE: WE dont push msgs to consumer, it pulls)
 
 * Kafka acts as a queue when multiple consumers belong to same consumer group
 
 * RabbitMQ used for point to point messaging with lower throughput designed for reliable message delivery. This is because RabbitMQ uses acks. if any ack fails, we re-queue to deliver msg again
 
 ** Use RabbitMQ when u need point to point msg delivery with low throughput. 
-** Kafka has gurantee of atleast once delivery. Suppose for m1 is delivered, and offset is 1 rn. if m2 fails, offset does not get incremented, so we can pull m2 from the queue. On successful processing, consumer sends ack to increment the offset. 
+** Kafka has guarantee of at least once delivery. Suppose for m1 is delivered, and offset is 1 rn. if m2 fails, offset does not get incremented, so we can pull m2 from the queue. On successful processing, consumer sends ack to increment the offset. 
+
 
 Reason for low throughput: architecture: Message oriented middleware
 - treats each msg individually, creates overhead. 
@@ -187,7 +189,7 @@ Reason for low throughput: architecture: Message oriented middleware
 - log based architecture:
 - provides batching, minimizes i/o operations
 - can scale horizontally
-- dont require acks, uses offset tracking
+- don't require acks, uses offset tracking
 - offset is how many msg each consumer has received and when consumer needs data, kafka sends new data from that offset
 
 * Kafka retains msg for longer period and allows multiple consumers to read the same msg.
@@ -230,7 +232,7 @@ this exchange help to route msg efficiently
 
 ## Persistence Mechanisms: this is optional, mainly done in-memory
 
-- RDb(redis database file) : takes periodic snapshots of the dataset at specified intervals which is stored in binary file. Con is loss of data of current                  snapshot if redis crashes while taking snapshot.
+- RDb(redis database file) : takes periodic snapshots of the dataset at specified intervals which is stored in binary file. Con is loss of data of current      snapshot if redis crashes while taking snapshot.
 
 - AOF(append-only file) : appends all logs to file con: performance affected.
 
@@ -238,9 +240,9 @@ this exchange help to route msg efficiently
 
 * Storage: Redis - in-memory Kafka: persistent (disk based)
 
-- redis cluster can be used to scale horizontally
+- Redis cluster can be used to scale horizontally
 
-- Redis sentinel: provides high availability by monitoring redis nodes, alerting and automatically promotes replicate in case primary node fails.
+- Redis sentinel: provides high availability by monitoring Redis nodes, alerting and automatically promotes replicate in case primary node fails.
 
 
 ### Nextjs:
@@ -262,12 +264,12 @@ A: 1. connection pooling and load balancing.
 
 - node is single threaded but ws use an event loop that handles multiple connections without blocking the main thread. When a ws event occurs, the event loop assigns it to a worker thread. 
 
-- Improvement that could be made: redis pub sub could also be used to scale 
+- Improvement that could be made: Redis pub sub could also be used to scale 
 
 
 # deployment of server on Linux based system using pm2: 
 
-- pm2 is process manager for nodejs applications. it helps for load balancing, log management and auto-restart also. 
+- pm2 is process manager for NodeJS applications. it helps for load balancing, log management and auto-restart also. 
 
 
 ### GraphQL: 
@@ -324,7 +326,7 @@ A: 1. heartbeat mechanism
 
 
 # Alternatives of WS:
-- SSE :  allows server to push updates to clinet over http but it is unidirectional
+- SSE :  allows server to push updates to client over http but it is unidirectional
 - long polling
 
 # ws performance optimizations:
