@@ -1,5 +1,4 @@
-TODO:
-transactions;
+
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -33,9 +32,9 @@ transactions;
 - ageing: prevents starvation by gradually increasing process priority.
 
 
-# Paging;
+# Paging:
 - it is memory management technique where the process is divided into fixed sized pages and loaded into frames in physical memory 
-- it eliminates external fragmentation as but caused internal frag. when the page size is larger than required
+- it eliminates external fragmentation  but causes internal frag. when the page size is larger than required
 
 # Segmentation:
 - Segmentation in an operating system (OS) is a memory management technique that divides a program into segments. 
@@ -87,7 +86,7 @@ Deadlock occurs when four conditions hold simultaneously:
 - use case: 	protect critical section		|| 	 manage multiple resouces
 
 # Mutex
-- locking mechanism that allows only one thread/process to access a shared resource at a time 
+-ime 
 - it is binary
 - only thread that locks the mutex can unlock it
 
@@ -95,6 +94,8 @@ Deadlock occurs when four conditions hold simultaneously:
 # Semaphore:
 - semaphore is a signaling mechanism the controls multiple threads/processes accessing a shared resource
 - signaling refers to mechanism where one thread notifies another thread that it can proceed. This is done by using acquire() [wait operation] and release [signal operation]
+
+- Each wait operation decrements the value and each signal operation increments the value
 
 - it maintains a counter that represents the number of avl resources
 - Types: Binary or Counting
@@ -217,6 +218,11 @@ CREATE INDEX idx_sales_region ON sales(region);
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+CORRECT ORDER: partitioning -> sharding -> clustering -> indexing
+
+but in postgres u must indexing data before clustering
+
+
 
 
 ### Difference bw delete, truncate and drop
@@ -252,7 +258,6 @@ ELSE
  	ROLLBACK;
 END IF
 
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Computer Networks:
@@ -281,3 +286,88 @@ END IF
 
 - MAC address: a hw address assigned to a network interface. It is unique and permanent. Used for communication within the same network. 
 - IP address: a logical address assigned to a device in a network. Can change. Used for communication across networks. 
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+MUTEX IMPLEMENTATION 
+
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+std::mutex mtx; // Mutex object
+
+void printData(int id) {
+    mtx.lock();  // Locking the mutex
+    std::cout << "Thread " << id << " is in the critical section.\n";
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::cout << "Thread " << id << " is leaving the critical section.\n";
+    mtx.unlock();  // Unlocking the mutex
+}
+
+int main() {
+    std::thread t1(printData, 1);
+    std::thread t2(printData, 2);
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+
+
+
+
+SEMAPHORE IMPLEMENTATION 
+
+
+#include <iostream>
+#include <thread>
+#include <semaphore>
+using namespace std;
+
+counting_semaphore<2> sem(2); // semaphore with 2 avl resources
+
+void accessResource(int id) {
+
+	sem.acquire(); // wait operation
+	cout<<"Thread " << id<< " is accessing resource\n";
+	cout<<"Thread " << id<< " is releasing resource\n";
+	sem.release();
+}
+
+int main ()  {
+
+	thread t1(accessResource(1));
+	thread t1(accessResource(2));
+	thread t1(accessResource(3));
+
+	t1.join();
+	t2.join();
+	t3.join();
+
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
