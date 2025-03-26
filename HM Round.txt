@@ -8,8 +8,14 @@ more docker
 challenges faced
 what is indexing
 circuit breaker
+consistent hashing
+nodejs working
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 builder pattern lld - avoid complex constructors with too many parameters
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Storefox AI
 
@@ -33,6 +39,8 @@ Firebase provides two types of msgs:
 - it is distributed task queue system for python 
 - allows to offload tasks to bg workers
 - celery handles task distribution 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Terraform: it is IAC (infrastructure as code)
 
@@ -75,6 +83,8 @@ for ec2 instance flow is like:
 - Auto scaling grps: adjusts no. of ec2 instances in response to demand
 - Auto load balancer distributes traffic across instances
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### AWS:
 
 - AWS Lambda: It is serverless computing service by AWS. Allows you to run code without provisioning and managing servers. It is event driven. Scales horizontally 
@@ -82,9 +92,9 @@ for ec2 instance flow is like:
 - VPC (Virtual Private Cloud): logically isolated network in aws
   - Subnets: public and private. Subnets divide network into smaller networks.
   - Internet gateway: to enable external traffic to public subnets.
-  - NAT gateway: allows outbound traffic from private subnets.
+  - NAT gateway (network address translation): allows outbound traffic from private subnets.
   - Security groups: firewalls for instances.
-  - Network ACLs: firewalls at subnet level. 
+  - Network ACLs (access control list): firewalls at subnet level. 
   - Route tables: in vpc, there are route tables which control traffic bw subnets and internet. 
 
 - AWS Fargate: serverless compute engine for containers. 
@@ -100,6 +110,8 @@ A: - use ec2 instances in auto scaling group across multiple AZs (availability z
 - DynamoDB: NoSQL db 
 - serverless db
 - serverless means management of servers is entirely handles by cloud providers
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Blockchain R&D intern
 
@@ -130,22 +142,24 @@ A: BigQuery is a serverless, columnar database that uses distributed processing 
 - each entry in index contains a key (the value from the indexed column) and a pointer to the corresponding row in the table.
 
 
-
 ##Clustering
 - clustering refers to organizing physical storage of data based on value one or more value of columns
 - it aims to store the rows with similar values close together on disk 
-- it helps to filter data efficiently,.  
+- it helps to filter data efficiently.  
 - basically it orders the data 
 - clustered by data on from_address/transaction_hash
 
 ** NOTE: google has already implemented partitioning
 ** so i DID clustering of that data then 
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 2M intern
 
 - Backpressure occurs when the data source produces data faster than the consumer can process it. Use the .pause() and .resume() methods to control the flow of data. Alternatively, use the pipe() method, which automatically handles backpressure by pausing the readable stream when the writable stream is busy.
 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### SKILLS:
 
@@ -154,6 +168,8 @@ A: docker uses bridge networks to allow containers to communicate.
 
 Q: Explain how Kafka ensures fault tolerance and high availability in a distributed system?
 A: Kafka uses fault tolerance by replicating partitions across multiple brokers. If one broker fails, other one takes over. Kafka also uses Zookeeper for leader election and cluster coordination.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Kafka:
 
@@ -180,7 +196,7 @@ Kafka- distributed event streaming platform Meaning:
 ** Kafka has guarantee of at least once delivery. Suppose for m1 is delivered, and offset is 1 rn. if m2 fails, offset does not get incremented, so we can pull m2 from the queue. On successful processing, consumer sends ack to increment the offset. 
 
 
-Reason for low throughput: architecture: Message oriented middleware
+RabbitMQ Reason for low throughput: architecture: Message oriented middleware
 - treats each msg individually, creates overhead. 
 - writes msgs in disk for reliability which is slow
 - requires back and forth mechanism of acks 
@@ -226,6 +242,8 @@ This thing is known as FAN OUT.
 - prefer RabbitMQ when we want msg routing. RabbitMQ has  architecture (producer - exchange - queue(can be multiple) - consumer)
 this exchange help to route msg efficiently 
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Redis: (Remote dictionary server)
 
 - stores data in key value pair
@@ -244,6 +262,7 @@ this exchange help to route msg efficiently
 
 - Redis sentinel: provides high availability by monitoring Redis nodes, alerting and automatically promotes replicate in case primary node fails.
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Nextjs:
 
@@ -251,7 +270,7 @@ this exchange help to route msg efficiently
 
 - CSR: Data is fetched on the client/browser, after loading the page. i.e. useEffect is used here so page loads first, then api gets called.
 
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Navic project:
 
@@ -266,11 +285,11 @@ A: 1. connection pooling and load balancing.
 
 - Improvement that could be made: Redis pub sub could also be used to scale 
 
-
 # deployment of server on Linux based system using pm2: 
 
 - pm2 is process manager for NodeJS applications. it helps for load balancing, log management and auto-restart also. 
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### GraphQL: 
 
@@ -288,6 +307,7 @@ A: 1. connection pooling and load balancing.
 - DataLoader is utility for batching and caching db requests in graphQL
 - dataloader collects all reqs made within a single tick of event loop and combines them in single batch.
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Event loop in Node.Js
 - allows to perform non blocking i/o operations despite being single-threaded. 
@@ -302,7 +322,7 @@ A: 1. connection pooling and load balancing.
 - if fn is async, it is sent to nodejs APIs (callbacks used here)
 - in case of blocking operation: we go to thread pool, assign a worker and processing is done. 
 
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Websockets:
 
@@ -334,9 +354,4 @@ A: 1. heartbeat mechanism
 - batching msgs
 - connection pooling: creating and destroying connection frequently increases latency and resource usage. 
 - load balancing
-
-
-
-
-
 

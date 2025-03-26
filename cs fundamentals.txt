@@ -1,3 +1,8 @@
+TODO:
+transactions;
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
 ### Operating Systems:
 
 - kernel: managers hw and system calls.
@@ -28,10 +33,89 @@
 - ageing: prevents starvation by gradually increasing process priority.
 
 
+# Paging;
+- it is memory management technique where the process is divided into fixed sized pages and loaded into frames in physical memory 
+- it eliminates external fragmentation as but caused internal frag. when the page size is larger than required
+
+# Segmentation:
+- Segmentation in an operating system (OS) is a memory management technique that divides a program into segments. 
+
+# paging vs segmentation: 
+- basis: 	fixed size pages 	|| variable size pages
+- frag: 	internal 		|| external
+- speed: 	faster (fixed sized lookups) || slower (variable sized lookups)
+- example: 	virtual memory 		|| code, stack 
+
+# Internal Fragmentation:
+- Wasted memory inside allocated blocks (due to fixed-size partitioning).
+- Example: Allocating 4KB for a 3KB file.
+
+# External Fragmentation:
+- Free memory is scattered in small chunks, making it unusable for large requests.
+- Solved by compaction or paging.
+
+# Race conditions:
+- race condition occurs when multiple threads/processes shared data concurrently leading to unexpected behaviour
+- Prevention: 
+	- mutex (locks) : allows only one thread to access the critical section
+	- semaphores: 	counting mechanisms to control resource access
+	- monitors: 	high level abstraction for sync 
+
+# Deadlock:
+
+Deadlock occurs when four conditions hold simultaneously:
+
+- Mutual Exclusion – Only one process can use a resource at a time.
+- Hold and Wait – A process holding resources is waiting for additional resources.
+- No Preemption – A resource cannot be taken away from a process forcefully.
+- Circular Wait – A circular chain of processes exists, each waiting for a resource held by the next.
+
+
+# Virtual memory:
+- allows program to use more memory than physically available by using disk space as an extension of RAM 
+
+# Demand Paging:
+- pages are loaded into RAM only when needed (on page fault)
+- uses page table to map virtual addresses to physical addresses
+
+### SYNC
+
+# Mutex vs Semaphore
+
+- type: 	binary (0 or 1) 			||	 can be counting  (N resources)
+- ownership: 	only the locking thread can unlock	||	 any thread can signal 
+- use case: 	protect critical section		|| 	 manage multiple resouces
+
+# Mutex
+- locking mechanism that allows only one thread/process to access a shared resource at a time 
+- it is binary
+- only thread that locks the mutex can unlock it
+
+
+# Semaphore:
+- semaphore is a signaling mechanism the controls multiple threads/processes accessing a shared resource
+- signaling refers to mechanism where one thread notifies another thread that it can proceed. This is done by using acquire() [wait operation] and release [signal operation]
+
+- it maintains a counter that represents the number of avl resources
+- Types: Binary or Counting
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### DBMS:
 
 - ACID: atomicity, consistency, isolation, durability.
+
+Atomicity – All operations succeed or fail together.
+Consistency – Data remains valid before and after the transaction.
+Isolation – Concurrent transactions don’t interfere.
+Durability – Once committed, changes persist even after a crash.
+
+START TRANSACTION;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT; -- Ensures Atomicity & Durability
+
 
 - Indexing: it speeds up searches by creating a data structure that allows faster lookups. 
 - B-tree is used in indexing: it is self balancing tree used for indexing db.
@@ -46,6 +130,105 @@
 - partitioning: splits larger table into smaller pieces for faster queries. 
 
 
+
+## DB Optimizations:
+
+# Indexing : An index is a data structure that enables fast location and retrieval of data within a database table.. 
+
+EX - CREATE INDEX idx_user_email ON users(email)
+
+# Normalization: DB Schema optimization: Like normalize the table (3NF or BCNF). Normalization is a process of organizing db to reduce redundancy 
+
+# Partitioning: dividing larger table into smaller manageable pieces to improve query performance. 
+
+EX-
+
+CREATE TABLE orders ( 
+	id INT NOT NULL,
+	order_date DATE NOT NULL, 
+	amount DECIMAL (10, 2)
+	PRIMARY KEY (id, order_date)
+) PARTITION BY RANGE(YEAR(order_date))  (
+	PARTITION p0 VALUES LESS THAN (2022),
+    	PARTITION p1 VALUES LESS THAN (2023),
+    	PARTITION p2 VALUES LESS THAN (2024)
+);
+
+# Clustering:
+- clustering refers to organizing physical storage of data based on value one or more value of columns
+- it aims to store the rows with similar values close together on disk	
+- clustering is done on existing index bcoz it reorders the data according to indexing done
+
+EX - 
+
+CREATE TABLE orders (
+	order_id SERIAL PRIMARY KEY, 
+	cust_id  INT,
+	order_date DATE,
+	total_amount DECIMAL (10, 2)
+)
+
+-- creating index -- 
+CREATE INDEX idx_cust_id ON orders(order_id)
+
+-- clustering using the cust_id --
+CLUSTER orders USING idx_customer
+
+
+# Sharding: distributing data across multiple servers to improve scalablity 
+
+
+# Using Explain: Explain is a sql command used to analyze and understand how query will be executed in the db engine. It helps in optimization by showing execution plan, indexes used, join methods, etc. 
+
+EX - EXPLAIN SELECT * FROM users where email = 'abc@gmail.com'
+
+# Connection Pooling: Reusing db connections to improve efficiency 
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### USING ALL => order is partitioning -> clustering -> indexing
+
+-- Range partitioning by date (for time-series data)
+
+CREATE TABLE sales (
+    sale_id INT PRIMARY KEY,
+    product_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    sale_date DATE NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    region VARCHAR(50)
+) PARTITION BY RANGE (sale_date);
+
+-- Create individual partitions
+CREATE TABLE sales_q1 PARTITION OF sales FOR VALUES FROM ('2023-01-01') TO ('2023-04-01');
+
+CLUSTER sales USING sales_date_idx
+
+CREATE INDEX idx_sales_product ON sales(product_id);
+CREATE INDEX idx_sales_customer ON sales(customer_id);
+CREATE INDEX idx_sales_region ON sales(region);
+
+- Table must exist first before any optimization
+- Partitioning affects physical storage layout and should be done early
+- Clustering organizes data physically based on a key
+- Indexing is done last as it depends on the final table structure
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+### Difference bw delete, truncate and drop
+	
+	   Removed data? 	      Removes table structure? 		Rollback possible? 
+- delete: 	yes (row-wise)		no					yes (within txn)
+- truncate: 	yes (all-rows)		no					no
+- drop: 	yes (entire table)	yes					no
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Computer Networks:
 
@@ -68,26 +251,8 @@
   - client and server perform a handshake to establish a secure connection. 
   - server send it's ssl certificate to the client 
   - client verifies the certificate and generates session key. 
-  - all data is encrypted using session key. 
-
+  - all data is encrypted using session key.
 
 
 - MAC address: a hw address assigned to a network interface. It is unique and permanent. Used for communication within the same network. 
 - IP address: a logical address assigned to a device in a network. Can change. Used for communication across networks. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
