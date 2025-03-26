@@ -1,16 +1,8 @@
 HM Round:
 
 TODO:
-graphql - not sure what's the status
-celery
-nlb
-more docker
-challenges faced
-what is indexing
-circuit breaker
-consistent hashing
-nodejs working
 
+more docker
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 builder pattern lld - avoid complex constructors with too many parameters
@@ -34,6 +26,15 @@ Firebase provides two types of msgs:
 - challenge: used redis caching to access frequently accessed device tokens
 
 * fcm handles notifications for offline users by storing in its queue and delivering them when device comes online. msg is queued for 28 days.
+
+
+
+### CHALLENGE FACED
+
+# Handling high volume of notifications: 
+- implemented batch processing using FCM multicast feature 
+- designed an idempotent notification system to avoid duplicate sends
+
 
 # celery:
 - it is distributed task queue system for python 
@@ -152,6 +153,14 @@ A: BigQuery is a serverless, columnar database that uses distributed processing 
 ** NOTE: google has already implemented partitioning
 ** so i DID clustering of that data then 
 
+
+## CHALLENGE:
+Q optimizing blockchain data queries 
+A
+- applied partition on block_timestamp and clustering on transaction_hash
+- avoid select * 
+- used dataloader in graphql to batch calls
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 2M intern
@@ -188,7 +197,6 @@ Kafka- distributed event streaming platform Meaning:
 
 - consumers pull the msgs from brokers so that consumers can work at their own pace (NOTE: WE dont push msgs to consumer, it pulls)
 
-* Kafka acts as a queue when multiple consumers belong to same consumer group
 
 * RabbitMQ used for point to point messaging with lower throughput designed for reliable message delivery. This is because RabbitMQ uses acks. if any ack fails, we re-queue to deliver msg again
 
@@ -223,7 +231,7 @@ RabbitMQ Reason for low throughput: architecture: Message oriented middleware
 - kafka has primary replica which do write ops and other does read ops
 - every read replica pull msg from primary to stay in sync
 - if primary write replica fails, zookeeper promotes a read replica to become primary. 
-- how to maintain consistency? consumer will consume only those msgs which have been replicated across all replicas. 
+- *****how to maintain consistency? consumer will consume only those msgs which have been replicated across all replicas. 
 
 - Ensuring fault tolerance and high availability : through replication. Each partition can be replicated across multiple brokers.
 
@@ -237,10 +245,23 @@ RabbitMQ Reason for low throughput: architecture: Message oriented middleware
 
 ## use case difference
 - in kafka, the msg from the topic can be used by various services at same time like logging, transcription i.e single msg can be used in multiple places while in RabbitMQ one msg can go at one place.
-This thing is known as FAN OUT.
+This thing in kafka is known as FAN OUT.
 
 - prefer RabbitMQ when we want msg routing. RabbitMQ has  architecture (producer - exchange - queue(can be multiple) - consumer)
 this exchange help to route msg efficiently 
+
+##** Key Rule:
+- All consumers within the same consumer group share messages (load balancing).
+- Consumers in different consumer groups receive the full message stream (independent consumption).
+* Kafka acts as a queue when multiple consumers belong to same consumer group
+
+### CHALLENGE:
+
+# Consumers couldn't keep up with high throughput event streams, causing lag
+- increased partition count for parallel processing
+- tuned consumer group settings
+- implemented back pressure with pause() and resume() in node.js streams
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -288,6 +309,15 @@ A: 1. connection pooling and load balancing.
 # deployment of server on Linux based system using pm2: 
 
 - pm2 is process manager for NodeJS applications. it helps for load balancing, log management and auto-restart also. 
+
+
+## Challenge:
+
+# scaling ws for real time geospatial data 
+- solution :
+- connection pooling
+- used pm2 clustering to distribute load across multiple cpu cores
+- 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -354,4 +384,4 @@ A: 1. heartbeat mechanism
 - batching msgs
 - connection pooling: creating and destroying connection frequently increases latency and resource usage. 
 - load balancing
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------
