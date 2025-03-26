@@ -228,6 +228,31 @@ CREATE INDEX idx_sales_region ON sales(region);
 
 
 
+
+
+### TRANSACTIONS:
+- a transaction is a logical unit of work that contains one or more sql statements. it should follow acid properties. 
+- Commit makes all changes in txn permanent
+- Rollback undoes all the changes in current transaction 
+
+# Reads;
+- Dirty read: reading uncommited data that may be rolled back
+- Non-repeatable read: getting diff values when reading same data multiple times in a txn
+- Phantom Read: seeing new rows in subsequent reads that weren't there initially 
+
+EXAMPLE: 
+ 
+BEGIN TRANSACTION 
+UPDATE Accounts SET balance = balance - 100 WHERE account_id = 'A'
+UPDATE Accounts SET balance = balance + 100 WHERE account_id = 'B'
+
+IF @@ERROR = 0
+	COMMIT; 
+ELSE 
+ 	ROLLBACK;
+END IF
+
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Computer Networks:
