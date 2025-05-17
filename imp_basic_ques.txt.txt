@@ -1,0 +1,158 @@
+# SQL VS NO-SQL
+- table based | document/key-value/graph based
+- fixed schema | dynamic schema
+- vertical scaling | horizontal scaling
+- txns via acid | often BASE
+- best for structured data and complex queries | unstructured/semi data / large datasets
+- supports joins | no joions
+- use case: banking, crm | real time analytics, iot, content managerment
+
+sql better for => complex queries, txns with acid properties, complex joins, structured data with clear relationships
+NoSQL better for => rapid development with changing requirements, large volume of unstructured data, high velocity of data, 
+
+BASE IN NO-SQL: 
+- Basically Available: they system guarantees availability even in the event of the failures
+- Soft State: The state of the system may change over time without input due to eventual consistency
+- Eventful consistency: Data may not be consistent immediately across all nodes, but it will become consistent eventually. 
+
+________________________________________________________________________________________________________________________
+
+
+# Microservice architecture: 
+- application is built as a collection of small, independent, loosely coupled services. Each service runs in its own process and communicates via lightweight mechanisms like http/rest/grpc
+
+Characteristics:
+-  independent services handling a specific business function 
+-  each service (if required) manages its own db
+- lightweight communication 
+- fault isolation 
+- services can be deployed, managed and scaled independently
+
+Challenges:
+- communication over network can increase latency
+- managing distributed txns is difficult
+
+________________________________________________________________________________________________________________________
+
+
+## AUTHENTICATION VS AUTHORIZATION: 
+
+- Authentication
+- Verifies who the user is.
+- Purpose: Confirms identity.
+- Example: Logging in with a username and password.
+- Output: Issues a token or session if credentials are valid.
+
+- Authorization
+- Definition: Determines what the user is allowed to do.
+- Purpose: Grants or denies access to resources.
+- Example: Checking if a logged-in user can access admin routes.
+
+________________________________________________________________________________________________________________________
+
+## REACT LIFECYCLE
+- MOUNTING -> UPDATING -> UNMOUNTING
+
+# Mounting:  component is being created and inserted into the DOM
+- method called: 
+- constructor() initializes the state and bindings
+- static getDerivedStateFromProps() : syncs props to state (rarely used)
+- render() : returns JSX to display
+- componentDidMount() : runs after the component is rendered (good for api calls)  : API calls, DOM manipulations, subscriptions.
+
+
+# Updating:  component is re-rendering due to state/prop changes, trigerred via props or state change
+- static getDerivedStateFromProps()
+- shouldComponentUpdate() – Optimizes performance by blocking unnecessary re-renders.
+- render() 
+- getSnapshotBeforeUpdate() : caputures dom into before update 
+- componentDidUpdate() : runs after the update, good for re-fetching the data
+
+# Unmounting: component is being removed form the DOM
+- componentWillUnmount() – Cleanup tasks (e.g., clear timers, unsubscribe events).
+
+In functional components, the useEffect hook replaces most lifecycle methods.
+
+useEffect(() => {
+  // componentDidMount & componentDidUpdate logic
+  return () => {
+    // componentWillUnmount logic
+  };
+}, [dependencies]);
+
+________________________________________________________________________________________________________________________
+
+
+## HANDLING ERRORS IN REACT: 
+
+# ERROR Boundaries : (class components)
+- Error boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of crashing the whole app.
+
+- using try catch blocks
+- For functional components, use libraries like react-error-boundary for a simpler API:
+
+
+________________________________________________________________________________________________________________________
+
+
+## DOM : DOCUMENT OBJECT MANIPULATION
+
+- The DOM (Document Object Model) is a tree-like representation of an HTML document, where each node represents an element. It allows JavaScript to access and modify the structure, style, and content of a webpage.
+
+- how do u manipulate the DOM in vanilla JavaScript?
+document.getElementById("id")
+element.textContent = "New Text"
+element.style.color = "blue"
+
+# Event bubbling and capturing in DOM: 
+When an event occurs like click on an element, it doesn't affect that element - it travels through the DOM
+
+- DOM events propagates in 3 phases: 
+
+- capturing phase: event travels from window down to target element
+- target phase: event reaches the target element 
+- bubbling phase: event bubbles up frm the target to window
+
+# Virtual DOM in React: 
+
+- The Virtual DOM is an in-memory copy of the real DOM used by React. When state or props change, React creates a new Virtual DOM, compares it to the old one (diffing), and applies only the necessary changes to the real DOM — improving performance.
+
+
+
+# REAL DOM | VIRTUAL DOM
+- Location: Browser  | in memory
+- Updates: Manual and immediate | batched and optimized
+- speed: slower with many changes | faster with diffing
+
+# React batches state updates and performs them asynchronously for performance optimization. Multiple state updates within the same event handler or lifecycle are batched together to avoid unnecessary re-renders. 
+
+
+# Reconciliation : it is a process in react used to compare the new Virtual DOM with the previous one and efficiently update the real DOM with only the differences. 
+
+
+- Role of key in react in lists: Keys in reawct help to identify which items have changed, added or removed. This optimizes list re-rendering during reconcilation. 
+{items.map(item => <li key={item.id}>{item.name}</li>)}
+
+
+
+# When a state is updated in react:
+- state change triggers a re-render. 
+- react generates a new virtual DOM
+- compares (Diff) it with old one
+- applied minimal changes to real dom
+
+
+
+## Refs in react: 
+- way to directly access DOM elements or React elements crated in render method.
+- use refs when -> managing focus, text selection, or media playback,
+- when not to use refs -> for anything that can be done declaritevely(using state/props)
+
+
+
+
+
+
+
+
+
