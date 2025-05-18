@@ -288,9 +288,22 @@ END IF
 - IP address: a logical address assigned to a device in a network. Can change. Used for communication across networks. 
 
 
+# Network Topology : Network topology is the arrangement of nodes and links of a network.
 
+Types of network topology: 
+- physical topology: describes placement of the various node in a computer network. 
+- logical topology: describes the idea in which way how data is transmitted through the network.
 
+## TYPES:
+- Bus Topology: multipoint connection in which every node/device is connected to a single cable via drop line. Drop lines connect nodes to man line.
 
+- Ring Topology: all nodes are connected in form of a ring such that every node has exactly two neighbours.
+
+- Star Topology: every device in network is connected in to a central device called hub. Hub helps in exchanging data as every data passes through it.
+
+- Mesh Topology: each device is connected to other device on the network through dedicated point to point link
+
+- Tree topology: combination of star and bus topology. in tree topology multiple star network are interconnected with one another using a bus network.
 
 
 ------------------------------------------------------------------------------------------------------------------------------------
