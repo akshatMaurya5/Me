@@ -1,0 +1,209 @@
+## GOLANG
+
+
+- statically typed, compiled language 
+
+
+- new(): allocated memory, returns pointer
+- make() : initializes slice, map, or channels
+
+- select{ } : used to wait on multiple channel operations
+
+select {
+case msg := <-ch1:
+    fmt.Println("Received", msg)
+case <-time.After(1 * time.Second):
+    fmt.Println("Timeout")
+}
+
+Q: How to handle race conditions in GO?
+A: channels, sync.mutex, sync.WaitGroup
+Running "go run -race" to detect races
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Goroutine: 
+- These are lightweight threads managed by Go runtime .
+- goroutines are killed immediately if main exits before goroutines finishes
+- goroutines start with 2kb stack which grows dynamically
+
+# how it is different from threads? 
+
+- Goroutines are cheaper (small stack size that can grow)
+- Managed by go runtime not OS
+- goroutines use channel for communication (share memory by communicating)
+- thousands can run concurrently with little overhead
+- faster creation/destruction than threads
+
+
+# how to coordinate multiple goroutines: 
+- sync.WaitGroup: wait for completion
+- channels: for communication
+- context: for cancellation
+
+------------------------------------------------------------------------------------------------------------------------------
+
+## Channels: 
+
+- channels enable goroutines to communicate and synchronize execution
+
+ch := make(chan int) -> unbuffered
+ch := make(chan int, 10) -> buffered with cap = 10
+
+# sending data: ch <- 5 
+# receiving data: x:= <-ch
+
+# unbuffered channels: 
+- blocks sender until receiver is ready
+- blocks receiver until sender is ready
+- zero capacity (no storage)
+
+ch := make(chan int)
+go func() {
+    ch <- 42  // Blocks until received
+}()
+fmt.Println(<-ch)  // Blocks until sent
+
+
+
+# buffered channels: 
+- only block when full (send) or empty (receive)
+- have specified capacity
+- dont synchronize goroutines directly
+------------------------------------------------------------------------------------------------------------------------------
+
+
+## Error handling in GO:
+- function returns error as their last return value
+- errors are just values that implements the 'error' interface
+- Callers must explicitly check for errors
+- panic and recover exist but are for exceptional cases only
+
+Error interface: 
+
+type error interface {
+	Error()  string
+}
+
+
+func mightFail() (int, error) {
+    // ...
+    return 0, errors.New("something went wrong")
+}
+
+func main() {
+    val, err := mightFail()
+    if err != nil {
+        // handle error
+    }
+}
+
+
+# panic/recover when to use instead of returning errors: 
+
+- panic() stops the program
+- recover() is used to handle panic and continue execution
+
+use case: 
+- for truly unrecoverable errors (like programming errors)
+- in initialization code where failure should stop the program
+- when implementing a function that must not fail 
+
+
+# errors.Is & errors.As
+
+- errors.Is(err,target) -> checks if err wraps target.
+- erros.As(err, &targetType) -> checks if error or it's cause if of a specific type
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+## Memory Management in GO: 
+
+- Go has automatic memory management with garbage collection
+- uses a concurrent, tri-color mark-and-sweep-collection
+- stack allocation for small objects and stack frames
+- heap allocation for larger objects or those that escape function scope
+- pointers exist but no pointer aritheric 
+- new() allocates zeroed memory 
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+## sync.Mutex | sync.RWMutex
+
+- provide mutual exclusion lock | provides reader-writer mutual exclusion lock
+- only one goroutine can hold the lock at a time | multiple readers can hold lock at same time but only one writer at a time
+- both reader and writer must wait | more efficient for read-heavy scenario
+
+# sync.WaitGroup
+- used to wait a group of goroutines to finish execution
+- use case : parallel api calls
+- defer wg.Done is must otherwise program will hang
+- always pass wg with a pointer bcoz wg is a struct not an interface. If we pass by value, it gets copied and each routine gets it's own separate copy
+
+go func(wg *sync.WaitGroup) {...} {&wg}
+
+# methods in waitgoup
+- Add(delta int) : increments the counter by delta
+- Done() : decrements the counter
+- Wait() : blocks until counter reaches zero
+
+EXAMPLE:
+
+var wg sync.WaitGroup
+
+wg.Add(1) // Add 1 task
+go func() {
+        defer wg.Done() // Mark as done
+        fmt.Println("Hello from goroutine")
+}()
+
+wg.Wait() // Block until all goroutines complete
+
+## sync.Pool:
+- it is concurrency-safe memory pool that stores and reuses temporary objects to reduce allocations and ease pressure on GC. 
+- used for short-lived, reusable objects.
+- one usecase can be for db connection pooling
+
+# Methods in sync.Pool
+
+- Get()  interface {} : retrieves an item from the pool
+- Put(x interface{}) : returns an item to the pool
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+# defer keyword: 
+- schedules a function call to return after the surrounding function completes, but before it returns to the caller in LIFO order. 
+- use case: closing resources, unlocking mutexes, recovering from panics, logging exit behaviour
+- deferred function arguments are evaluated immediately
+
+func test() {
+    x := 5
+    defer fmt.Println(x)
+    x = 10
+}
+// Output: 5
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+## Garbage Collection: 
+
+*  GO uses concurrent, tri-color mark-and-sweep garbage collector
+
+- Go is automatic memory management — it frees memory that’s no longer reachable
+- Triggers for GC: heap growth, time based gc or manual runtime.GC() 
+- only the heap is garbage collected
+
+
+# Basics: 
+- Mark: finds all live objects starting from roots (globals, stacks, etc). It uses tri-color for abstraction (white, grey, black) to track progress
+- sweep: free unused memory 
+- concurrent: runs alongside with program with short stop-the-world pauses
+
+# How GC know what to clean up? 
+- it starts from root(stack & globals) and marks everything reachable. anything unreachable gets collected
+
