@@ -15,6 +15,16 @@ BASE IN NO-SQL:
 - Soft State: The state of the system may change over time without input due to eventual consistency
 - Eventful consistency: Data may not be consistent immediately across all nodes, but it will become consistent eventually. 
 
+
+why sql is scaled vertically? 
+- traditional sql dbs have monolithic architecture which are designed to run on a single server
+- to maintain consistency and txns in sql, sql systems often avoid splitting data across many servers
+
+why NoSQL is scaled horizontally? 
+- they have distributed architecture
+- flexible schema and eventual consistency allows partitioning and replication across multiple servers
+
+
 ________________________________________________________________________________________________________________________
 
 
