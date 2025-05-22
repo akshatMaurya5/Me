@@ -265,7 +265,8 @@ END IF
 # tcp vs udp
 - establish connection before communication || sends packets without prior connection
 - slower due to reliability mechanisms || no guarantee of delivery
-
+- maintains order of packets | no ordering 
+- use case: web browsing(http), email(smtp), file transfer(ftp) | video streaming, online gaming, VoIP
 
 - subnet is logical division of IP network. It reduces congestion, enhances security by isolating network segments. 
 
