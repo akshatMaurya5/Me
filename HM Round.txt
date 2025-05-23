@@ -41,6 +41,14 @@ Firebase provides two types of msgs:
 - allows to offload tasks to bg workers
 - celery handles task distribution 
 
+---------------------------------------------------------------------------------------------------------------------------------
+
+# Pre-signed url: 
+- client requests for a presigned url with typical payload of filename, content and some other meta data including auth token 
+- backend returns a presigned url with an expiry time
+- client then uses presigned url to upload the file directly to s3, skipping the backend entrirely
+- client makes put/post request to the presigned url with appropriate header with the audio file. At this point, no auth is required as url contains creds
+- to confirm upload, a success or error status code is returned. 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Terraform: it is IAC (infrastructure as code)
@@ -181,7 +189,9 @@ A: Kafka uses fault tolerance by replicating partitions across multiple brokers.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Kafka:
-
+ 
+* I used kafka to decouple audio ingestion from processing.
+ 
 - Kafka is distributed event streaming platform used for high level throughput, fault-tolerant messaging.
 
 Kafka- distributed event streaming platform Meaning: 
@@ -240,7 +250,10 @@ RabbitMQ Reason for low throughput: architecture: Message oriented middleware
 - kafka msgs are persisted on disk and retains them for a certain period of time while RabbitMQ deletes msgs once consumed.
 - kafka maintains ordering whin a partition while RabbitMQ does not guarantee that. 
 - kafka can easily scale horizontally, while RabbitMQ scales vertically
+- in kafka msgs are stored in immutable logs, and consumer can replay old msgs (reset offset) while in RabbitMQ msgs are deleted after consumption unless ttl is set
+
 * prefer RabbitMQ if your are using req-res architecture while kafka is preferred in when we need event streaming, real-time data pipelines.
+
 
 
 ## use case difference
@@ -254,6 +267,29 @@ this exchange help to route msg efficiently
 - All consumers within the same consumer group share messages (load balancing).
 - Consumers in different consumer groups receive the full message stream (independent consumption).
 * Kafka acts as a queue when multiple consumers belong to same consumer group
+
+
+## MORE ON KAFKA
+
+- kafka topic is split into partitions, each partition is ordered, durable and immutable 
+- consumers within a group share partitions -- each partition is consumed by exactly one consumer
+- if consumers > partitions, they sit idle
+
+use case: 
+- audio is published to a topic
+# we have two services - transcription, logging
+- then we will define two consumer groups 
+- now each consumer group received a separate copy of the item
+
+
+on the other hand if we had to implement same thing in RabbitMQ:
+- RabbitMQ uses exchanges(message routers) and queues (message buffers) to control message distribution 
+- this requires explicit exchange and queue setup (CON)
+- since RabbitMQ does not have partitioning, instead there is a single queue, hence no parallel processing possible 
+- RabbitMQ provides selecting routing which routes msgs based on routing_key 
+
+** USE RABBITMQ WHEN U NEED SIMPLE TASK QUEUES OR FLEXIBLE ROUTING
+
 
 ### CHALLENGE:
 
