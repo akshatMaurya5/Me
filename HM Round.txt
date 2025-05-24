@@ -18,9 +18,11 @@ Firebase provides two types of msgs:
    - Another one is data messages: used for sending custom data which is handled in background, eg an update.
 
 - device sends a device token which is stored in db
-- exponential backoff in case of failure
 - implemented queue notifications to handle large volume of notifications. this decoupled the notification triggering and sending process.
 - unique identifiers for notification msg to ensure idempotency.
+
+- exponential backoff in case of failure
+
 - challenge: fcm is rate limited; solved using batch request which uses multicast messaging feature. can handle 500 devices per request
   - multicast feature allows to send notification to multiple devices in a single request.
 - challenge: used redis caching to access frequently accessed device tokens
@@ -46,10 +48,25 @@ Firebase provides two types of msgs:
 # Pre-signed url: 
 - client requests for a presigned url with typical payload of filename, content and some other meta data including auth token 
 - backend returns a presigned url with an expiry time
-- client then uses presigned url to upload the file directly to s3, skipping the backend entrirely
+- client then uses presigned url to upload the file directly to s3, skipping the backend entirely
 - client makes put/post request to the presigned url with appropriate header with the audio file. At this point, no auth is required as url contains creds
 - to confirm upload, a success or error status code is returned. 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## POSTHOG 
+- product analytics - event tracking, session recordings
+- funnel analysis: to track user journey
+- feature flags and a/b testing
+- finding bugs and ux issues and track user adoption 
+
+**** why used posthog? open source, self-hostable, feature flags, and session recordings
+
+- self hostable means you can depoloy it on your own infra. this adds more data ownership, privacy and customization
+
+alternatives are : mixpanel, amplitude, heap : but they do not contain above features and in some session recording is another paid feature. 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 ## Terraform: it is IAC (infrastructure as code)
 
@@ -91,7 +108,6 @@ for ec2 instance flow is like:
 - define ec2 instance and attach sg 
 - Auto scaling grps: adjusts no. of ec2 instances in response to demand
 - Auto load balancer distributes traffic across instances
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### AWS:
@@ -255,12 +271,11 @@ RabbitMQ Reason for low throughput: architecture: Message oriented middleware
 * prefer RabbitMQ if your are using req-res architecture while kafka is preferred in when we need event streaming, real-time data pipelines.
 
 
-
 ## use case difference
 - in kafka, the msg from the topic can be used by various services at same time like logging, transcription i.e single msg can be used in multiple places while in RabbitMQ one msg can go at one place.
 This thing in kafka is known as FAN OUT.
 
-- prefer RabbitMQ when we want msg routing. RabbitMQ has  architecture (producer - exchange - queue(can be multiple) - consumer)
+- prefer RabbitMQ when we want msg routing. RabbitMQ has  architecture (producer - exchanges (msg routers) - queue(can be multiple) - consumer)
 this exchange help to route msg efficiently 
 
 ##** Key Rule:
@@ -399,14 +414,18 @@ A: 1. connection pooling and load balancing.
 - once connection is established, msgs are send via frames(text, binary, ping/pong, close)
 - unlike http, no need to establish new connection for every msg
 
-Q: how ws handle reconnection if connection drops?
-A: 1. heartbeat mechanism 
-   2. auto reconnect logic
-
 # How to scale ws? 
-- use pub/sub for msg distribution
-- deploy multiple ws server behind load balancer
-- use connection pooling
+- distribute websocket connections across multiple backend servers, and use sticky session(session affinity) to ensure client connects to same server
+- use pub/sub message broker to broadcast all messages to all connected servers, also ensures real time sync  bw instances
+- use connection pooling to optimize server performance
+- compressing the payload 
+
+
+## how to handle connection drops? heartbeat mechanism, auto reconnect logic
+- ping/pong heartbeats: send periodic pings framers from the server, if no pong received within a timeout, close the connection
+- automatic reconnection: using exponential backoff 
+- we can store client's userId, sessionId or token so that server can restore session state, and resubscribe to where it dropped
+
 
 - Ws frames: are the smallest unit of data transmitted over a ws connection. Frame consists of a header (contains metadata like opcode, payload length) and payload (actual data)
 
