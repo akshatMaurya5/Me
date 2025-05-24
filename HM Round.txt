@@ -206,7 +206,7 @@ A: Kafka uses fault tolerance by replicating partitions across multiple brokers.
 
 ### Kafka:
  
-* I used kafka to decouple audio ingestion from processing.
+* I used kafka to decouple audio ingestion from processing (like transcription, logging,int/ext tagging)
  
 - Kafka is distributed event streaming platform used for high level throughput, fault-tolerant messaging.
 
@@ -393,10 +393,24 @@ A: 1. connection pooling and load balancing.
 ### Event loop in Node.Js
 - allows to perform non blocking i/o operations despite being single-threaded. 
 
+* It basically keeps on checking if there is any work to do and runs appropriate callback when the task is ready 
+
+- Event loop is a continuous process that:
+	- checks if call stack is empty 
+	- if empty, take the first task from task queue and pushes to call stack
+	- repeats this process indefinitely 
+
 # Working: 
-- node uses it's event driven architecture to handle multiple tasks simultaneously. 
-- event loop manages async operations and callbacks. 
-- event loop is divided into several phases like timers, callbacks, idle, prepare, poll, check.
+1. JS starts by executing all the sync code line by line and fills the call stack 
+2. a) when it encounters an async function, the task is handed off to web api(http) or node api
+2. b) JS does not wait and move on 
+3. a) when the async task is done, callbacks from setTImeout, setInterval go to macrotask queue (callback queue)
+   b) promose.then,async/await goes to microtask qeueu	
+
+4. Event loop now cehcks if call stack is empty? if tyes then run all the microtasks in order and then run macrotask
+
+** Event loop gives illusion of multi threading in single-threaded env by offloading work to system-level threads and handling the result asynchrously handled by libuv thread pool
+
 
 - client makes function call
 - fn gets pushed onto call stack. 

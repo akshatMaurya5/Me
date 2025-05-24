@@ -11,9 +11,14 @@ sql better for => complex queries, txns with acid properties, complex joins, str
 NoSQL better for => rapid development with changing requirements, large volume of unstructured data, high velocity of data, 
 
 BASE IN NO-SQL: 
-- Basically Available: they system guarantees availability even in the event of the failures
-- Soft State: The state of the system may change over time without input due to eventual consistency
-- Eventful consistency: Data may not be consistent immediately across all nodes, but it will become consistent eventually. 
+
+- Basically Available: they system guarantees availability even in the event of the failures. The db will always respond to queries, though the response may be incomplete or contain stale data. This is achieved by replication and partitioning. 
+
+- Soft State: The state of the system may change over time without input due to eventual consistency. Data may be inconsistent during updates but will eventual react consistency. 
+
+** It tolerates temporarily inconsistency in favor of availability whereas in ACID consistency >> avaiballity 
+
+- Eventual consistency: The system will become consistent over time. All replicas will eventually receive and apply updates
 
 
 why sql is scaled vertically? 
@@ -119,9 +124,11 @@ When an event occurs like click on an element, it doesn't affect that element - 
 
 - DOM events propagates in 3 phases: 
 
-- capturing phase: event travels from window down to target element
-- target phase: event reaches the target element 
-- bubbling phase: event bubbles up frm the target to window
+- capturing phase: event travels from window down to target element. IMP: You can block or modify the event before it reaches the target eg Logging, analytics or checking permissions 
+
+- target phase: event reaches the target element. IMP: You can handle the primary action (e.g., submit a form, open a modal). You can stop the event from bubbling further with e.stopPropagation().
+
+- bubbling phase: event bubbles up from the target to window IMP: Handle delegation or cleanup. EG: Close dropdowns, update UI after an action.
 
 # Virtual DOM in React: 
 
@@ -157,6 +164,42 @@ When an event occurs like click on an element, it doesn't affect that element - 
 - way to directly access DOM elements or React elements crated in render method.
 - use refs when -> managing focus, text selection, or media playback,
 - when not to use refs -> for anything that can be done declaritevely(using state/props)
+
+
+
+_________________________________________________________________________________________________________________________________________________
+
+## CAP THEORM - CONSISTENCY, AVAILABLITY, PARITION TOLERANCE 
+
+- In presence of network partition (P), a distributed system can either be consistent (C) or available (A) not both. 
+
+
+- Consistency: All nodes see same data at same time (eg in single node sql db, once u update, everyone see it)
+- Availability: Every requests gets a response - without guarantee it's latest (i.e u can get stale data as well)
+- Partition Tolerance: System continues to work even if parts of the network fails or can't communicate
+
+# CP
+- sacrifices availability 
+- if a partition occurs, the system will return errors until consistency can be guaranteed 
+- eg distributed dbs like MongoDB 
+
+# AP
+- sacrifices consistency
+- the system will always accept writes and reads even during the partition, but may return the stale data
+- eg: Cassandra/DynamoDB
+
+# CA
+- sacrifices partition tolerance
+- only works when on network partition occurs
+
+
+** Partition is inevitable, so we have to choose bw AP or CP
+- banking - consistency >>>>>
+- social media feed: AP 
+- e commerce: might use hybrid with eventual consistency 
+
+
+
 
 
 
