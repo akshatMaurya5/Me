@@ -318,7 +318,12 @@ on the other hand if we had to implement same thing in RabbitMQ:
 
 ### Redis: (Remote dictionary server)
 
+- redis follows single threaded architecture with an event loop that handles requests
+
 - stores data in key value pair
+
+# use cases:
+- caching, leaderboards, reawl time analysitcs,msg broker
 
 ## Persistence Mechanisms: this is optional, mainly done in-memory
 
