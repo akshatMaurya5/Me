@@ -1,0 +1,4 @@
+Worked on designing and scaling backend systems to support high-volume financial operations, ensuring reliability, observability, and performance at scale.
+• Developed and maintained a high-scale Notification System handling payment notifications for over 100M transactions each day.
+• Implemented a custom library for the internal metrics framework integrated with Grafana.
+• Built multiple Kafka source connectors to improve reliability and minimize downtime failures.
