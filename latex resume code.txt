@@ -1,0 +1,193 @@
+%-------------------------
+% Resume in LaTeX
+% Based on: Jake's Resume Template
+%-------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage[margin=0.5in]{geometry}
+
+% Make all links blue
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+  \item
+  \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+    \small#1 & #2 \\
+  \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape Akshat Maurya} \\ \vspace{1pt}
+    \small Ludhiana $|$ +91-7889021799 $|$ \href{mailto:mauryaakshat5@gmail.com}{\underline{mauryaakshat5@gmail.com}} $|$ 
+    \href{https://linkedin.com/in/akshatmaurya5}{\underline{LinkedIn}}
+\end{center}
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Dr B.R Ambedkar National Institute of Technology}{2020--2024}
+      {Bachelor of Technology, Electronics and Communication Engineering}{Jalandhar, Punjab, India}
+  \resumeSubHeadingListEnd
+
+%-----------CODING PROFILES-----------
+\section{Coding Profiles}
+  \resumeSubHeadingListStart
+    \resumeProjectHeading
+      {\textbf{LeetCode} -- Knight Badge with rating of 1980+ and 1400+ tasks solved.}
+      {\href{https://leetcode.com/u/tirederit_5/}{\underline{LINK}}}
+
+    \resumeProjectHeading
+      {\textbf{Codeforces} -- Specialist rank (rated 1500+) and over 950+ problems solved.}
+      {\href{https://codeforces.com/profile/alchemist_5}{\underline{LINK}}}
+
+    \resumeProjectHeading
+      {\textbf{CodeChef} -- Rated a 3-star coder.}
+      {\href{https://www.codechef.com/users/tirederit}{\underline{LINK}}}
+  \resumeSubHeadingListEnd
+
+%-----------WORK EXPERIENCE-----------
+\section{Work Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Visa Inc $|$ Software Engineer}{July 2025 -- Present}
+      {Java, Kafka, SQL, Python}{}
+      \resumeItemListStart
+        \resumeItem{Developed and maintained a high-scale Notification System handling payment notifications for over 100M transactions each day.}
+        \resumeItem{Implemented a custom library for the internal metrics framework integrated with Grafana.}
+        \resumeItem{Built multiple Kafka source connectors to improve reliability and minimize downtime failures.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Storefox AI $|$ Software Engineer}{August 2024 -- June 2025}
+      {Node.Js, NextJs, Terraform, MongoDB, SQL, Kafka}{}
+      \resumeItemListStart
+        \resumeItem{Designed and implemented the backend service to send push notifications using Firebase Cloud Messaging.}
+        \resumeItem{Developed the audit feature to track the stats of reps which increased tenant's engagement by 15\%.}
+        \resumeItem{Built backend service using Posthog to track over 10 different metrics regarding reps' performance.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Samaritian AI $|$ Blockchain Research \& Developer Intern}{Jan 2024 - May 2024}
+      {Ethereum Blockchain, Node.js, Solidity, SQL}{}
+      \resumeItemListStart
+        \resumeItem{Filtered and analyzed 1M+ swap transactions on Uniswap Protocol using Google BigQuery, enhancing data accuracy and retrieval speed.}
+        \resumeItem{Developed and implemented algorithm to calculate Profit and Loss of blockchain swap transactions, reducing processing time by 15\% and improving efficiency.}
+        \resumeItem{Optimized query performance with subgraphs on The Graph Protocol, increasing retrieval speed by 25\%.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Excellence Technologies $|$ Full Stack MERN Developer}{May 2023 - July 2023}
+      {ReactJs, NodeJs, MongoDb, Express}{}
+      \resumeItemListStart
+        \resumeItem{Implemented Node.JS streaming pipelines to efficiently process large datasets, improving speed and performance.}
+        \resumeItem{Developed, tested, and deployed robust and scalable REST APIs for a comprehensive backend system.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Projects}
+  \resumeSubHeadingListStart
+    
+    \resumeProjectHeading
+      {\textbf{NAV-IC: ISRO Funded Project} $|$ \emph{React.js, MongoDb, NodeJS, ExpressJs}}
+      {\href{https://www.veed.io/view/e582709a-5751-4c59-b8c0-dd9d5cadb899?panel=share}{\underline{Demo}} \quad
+       \href{https://github.com/akshatMaurya5/Nav-IC}{\underline{GitHub}}}
+      \resumeItemListStart
+        \resumeItem{Developed a real-time asset tracking system integrating ISRO's hardware location tracking device.}
+        \resumeItem{Integrated Bhuvan Maps using Leaflet Container for precise plotting of latitudes and longitudes.}
+        \resumeItem{Deployed and configured control server using Linux to support and manage up to 20000+ devices.}
+      \resumeItemListEnd
+          
+    \resumeProjectHeading
+      {\textbf{Job Tracker} $|$ \emph{React, MongoDb, Node, Express.js}}
+      {\href{https://www.veed.io/view/a8d71347-2272-49f1-83c0-4e96786977bb?panel=share}{\underline{Demo}} \quad
+       \href{https://github.com/akshatMaurya5/jobTrackerApp}{\underline{GitHub}}}
+      \resumeItemListStart
+        \resumeItem{Built an application to track and streamline job applications, enhancing monitoring efficiency.}
+        \resumeItem{Integrated bar-charts and table components to improve user navigation and data visualization.}
+      \resumeItemListEnd
+          
+  \resumeSubHeadingListEnd
+
+%-----------SKILLS-----------
+\section{Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: C/C++, Java/Python} \\ 
+     \textbf{Technologies}{: Operating Systems, System Design, Data Structures and Algorithms (DSA), Docker, Git, Database} \\
+    }}
+ \end{itemize}
+
+%-------------------------------------------
+\end{document}
