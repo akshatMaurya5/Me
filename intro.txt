@@ -1,1 +1,5 @@
-Software Engineer specializing in backend and distributed systems at Visa Inc. Previously contributed to building scalable backend services at Storefox AI, developed blockchain-based applications at Samaritan AI, and strengthened full-stack expertise at Excellence Technologies. Strong problem-solving foundation with a LeetCode Knight Badge (1980+) and Codeforces Specialist (1500+), solving over 2,400+ algorithmic problems across platforms.
+Hi, I’m Akshat Maury — a Software Engineer focused on backend and distributed systems at Visa Inc..
+
+Previously, I contributed to building scalable backend services at Storefox AI, developed blockchain-based applications at Samaritan AI, and expanded my full-stack expertise at Excellence Technologies.
+
+I have a strong problem-solving foundation, holding a LeetCode Knight badge (1980+) and a Codeforces Specialist rating (1500+), with over 2,400 algorithmic problems solved across various platforms.

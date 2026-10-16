@@ -86,7 +86,7 @@
 %----------HEADING----------
 \begin{center}
     \textbf{\Huge \scshape Akshat Maurya} \\ \vspace{1pt}
-    \small Ludhiana $|$ +91-7889021799 $|$ \href{mailto:mauryaakshat5@gmail.com}{\underline{mauryaakshat5@gmail.com}} $|$ 
+    \small Ludhiana $|$ +91-7889021799 $|$ \href{mailto:mauryaakshat5@gmail.com}{\underline{mauryaakshat5@gmail.com}} $|$
     \href{https://linkedin.com/in/akshatmaurya5}{\underline{LinkedIn}}
 \end{center}
 
@@ -123,8 +123,9 @@
       {Java, Kafka, SQL, Python}{}
       \resumeItemListStart
         \resumeItem{Developed and maintained a high-scale Notification System handling payment notifications for over 100M transactions each day.}
-        \resumeItem{Implemented a custom library for the internal metrics framework integrated with Grafana.}
-        \resumeItem{Built multiple Kafka source connectors to improve reliability and minimize downtime failures.}
+        \resumeItem{Built a centralized observability framework with health checks for downstream services and external system dependencies.}
+        \resumeItem{Developed a non-blocking API telemetry engine that intercepts and captures full request-response lifecycles with near-zero overhead on service latency.}
+        \resumeItem{Implemented Apache Kafka-driven offline retry system to maintain cross-datacenter data replication during network outages, ensuring high availability.}
       \resumeItemListEnd
 
     \resumeSubheading
@@ -158,7 +159,7 @@
 %-----------PROJECTS-----------
 \section{Projects}
   \resumeSubHeadingListStart
-    
+
     \resumeProjectHeading
       {\textbf{NAV-IC: ISRO Funded Project} $|$ \emph{React.js, MongoDb, NodeJS, ExpressJs}}
       {\href{https://www.veed.io/view/e582709a-5751-4c59-b8c0-dd9d5cadb899?panel=share}{\underline{Demo}} \quad
@@ -168,7 +169,7 @@
         \resumeItem{Integrated Bhuvan Maps using Leaflet Container for precise plotting of latitudes and longitudes.}
         \resumeItem{Deployed and configured control server using Linux to support and manage up to 20000+ devices.}
       \resumeItemListEnd
-          
+
     \resumeProjectHeading
       {\textbf{Job Tracker} $|$ \emph{React, MongoDb, Node, Express.js}}
       {\href{https://www.veed.io/view/a8d71347-2272-49f1-83c0-4e96786977bb?panel=share}{\underline{Demo}} \quad
@@ -177,14 +178,14 @@
         \resumeItem{Built an application to track and streamline job applications, enhancing monitoring efficiency.}
         \resumeItem{Integrated bar-charts and table components to improve user navigation and data visualization.}
       \resumeItemListEnd
-          
+
   \resumeSubHeadingListEnd
 
 %-----------SKILLS-----------
 \section{Skills}
  \begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
-     \textbf{Languages}{: C/C++, Java/Python} \\ 
+     \textbf{Languages}{: C/C++, Java/Python} \\
      \textbf{Technologies}{: Operating Systems, System Design, Data Structures and Algorithms (DSA), Docker, Git, Database} \\
     }}
  \end{itemize}

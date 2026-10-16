@@ -1,2 +1,2 @@
 I’m Akshat — a backend and distributed systems engineer at Visa. I’m looking for a role where I can learn fast, work with modern tech, and solve real scalability challenges. Infisical interests me because of the strong engineering focus around secure infrastructure and developer tooling.
-I’ve previously built scalable backend systems at Storefox AI, worked on blockchain analytics at Samaritan AI, and solved 2,400+ algorithmic problems across platforms. I’d love to explore if my background aligns with what you’re building.
+I’ve previously built scalable backend systems at Storefox AI, worked on blockchain analytics at Samaritan AI, and solved 2,400+ algorithmic problems across platforms.
